@@ -1,4 +1,4 @@
-# proskomma-apollo
+# diegesis-apollo-sandbox
 Proskomma served via Apollo
 
 ## Usage
