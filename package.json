@@ -1,5 +1,5 @@
 {
-  "name": "proskomma-apollo",
+  "name": "diegesis-apollo-sandbox",
   "version": "0.0.1",
   "description": "Proskomma served via Apollo",
   "main": "index.js",
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Proskomma/proskomma-apollo.git"
+    "url": "git+https://github.com/Proskomma/diegesis-apollo-sandbox.git"
   },
   "author": "Mark Howe",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Proskomma/proskomma-apollo/issues"
+    "url": "https://github.com/Proskomma/diegesis-apollo-sandbox/issues"
   },
-  "homepage": "https://github.com/Proskomma/proskomma-apollo#readme"
+  "homepage": "https://github.com/Proskomma/diegesis-apollo-sandbox#readme"
 }
