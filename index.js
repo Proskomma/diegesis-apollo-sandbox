@@ -1,3 +1,5 @@
+const path = require('path');
+const fse = require('fs-extra');
 const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
 const express = require('express');
@@ -11,7 +13,22 @@ async function startApolloServer(typeDefs, resolvers) {
     const app = express();
     const httpServer = http.createServer(app);
     const pk = new UWProskomma();
-    thaw(pk, nt_ebible_27book);
+    if (process.argv.length > 2) {
+        for (const file of fse.readdirSync(path.resolve(process.argv[2]))) {
+            console.log(`Loading ${file}`);
+            pk.loadSuccinctDocSet(
+                fse.readJsonSync(
+                    path.join(
+                        path.resolve(process.argv[2],
+                            file
+                        )
+                    )
+                )
+            );
+        }
+    } else {
+        thaw(pk, nt_ebible_27book);
+    }
     const server = new ApolloServer({
         typeDefs,
         resolvers,
