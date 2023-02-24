@@ -4,16 +4,35 @@ const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
 const express = require('express');
 const http = require('http');
-const {UWProskomma, typeDefs, resolvers} = require('uw-proskomma');
-const {thaw} = require('proskomma-freeze');
-const { nt_ebible_27book } = require('proskomma-frozen-archives');
+const { Proskomma, typeDefs, resolvers } = require('proskomma-core');
+// const {thaw} = require('proskomma-freeze');
+// const { nt_ebible_27book } = require('proskomma-frozen-archives');
 
 async function startApolloServer(typeDefs, resolvers) {
     const PORT = 2468;
     const app = express();
     const httpServer = http.createServer(app);
-    const pk = new UWProskomma();
-    if (process.argv.length > 2) {
+    const pk = new Proskomma([
+        {
+            name: "source",
+            type: "string",
+            regex: "^[^\\s]+$"
+        },
+        {
+            name: "project",
+            type: "string",
+            regex: "^[^\\s]+$"
+        },
+        {
+            name: "revision",
+            type: "string",
+            regex: "^[^\\s]+$"
+        },
+    ]);
+    if (process.argv.length !== 3) {
+        console.error("That's an error");
+        process.exit(1);
+    } else {
         for (const file of fse.readdirSync(path.resolve(process.argv[2]))) {
             console.log(`Loading ${file}`);
             pk.loadSuccinctDocSet(
@@ -26,8 +45,6 @@ async function startApolloServer(typeDefs, resolvers) {
                 )
             );
         }
-    } else {
-        thaw(pk, nt_ebible_27book);
     }
     const server = new ApolloServer({
         typeDefs,
