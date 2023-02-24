@@ -1,12 +1,13 @@
 const path = require('path');
 const fse = require('fs-extra');
-const { ApolloServer } = require('apollo-server-express');
-const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer');
 const express = require('express');
 const http = require('http');
+const cors = require('cors');
+const { json } = require('body-parser');
 const { Proskomma, typeDefs, resolvers } = require('proskomma-core');
-// const {thaw} = require('proskomma-freeze');
-// const { nt_ebible_27book } = require('proskomma-frozen-archives');
 
 async function startApolloServer(typeDefs, resolvers) {
     const PORT = 2468;
@@ -53,10 +54,17 @@ async function startApolloServer(typeDefs, resolvers) {
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     });
     await server.start();
-    server.applyMiddleware({ app });
-    await new Promise(resolve => httpServer.listen({ port: 2468 }, resolve));
-    console.log(`🚀 Server ready at http://localhost:2468${server.graphqlPath}`);
+    app.use(
+        '/graphql',
+        cors(),
+        json(),
+        expressMiddleware(server, {
+            context: async ({ req }) => ({ token: req.headers.token }),
+        }),
+    );
+    // server.applyMiddleware({ app });
+    await new Promise(resolve => httpServer.listen({ port: PORT }, resolve));
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
 }
 
-const pk =
 startApolloServer(typeDefs, resolvers);
