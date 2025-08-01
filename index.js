@@ -13,31 +13,23 @@ async function startApolloServer(typeDefs, resolvers) {
     const PORT = 2468;
     const app = express();
     const httpServer = http.createServer(app);
-    const pk = new Proskomma([
-        {
-            name: "source",
-            type: "string",
-            regex: "^[^\\s]+$"
-        },
-        {
-            name: "project",
-            type: "string",
-            regex: "^[^\\s]+$"
-        },
-        {
-            name: "revision",
-            type: "string",
-            regex: "^[^\\s]+$"
-        },
-    ]);
+    const pk = new Proskomma();
     if (process.argv.length !== 3) {
-        console.error("That's an error");
+        console.error("USAGE: node index.js <USFM Dir>");
         process.exit(1);
     } else {
         for (const file of fse.readdirSync(path.resolve(process.argv[2]))) {
+            if (!file.endsWith(".usfm")) {
+                continue;
+            }
             console.log(`Loading ${file}`);
-            pk.loadSuccinctDocSet(
-                fse.readJsonSync(
+            pk.importDocument(
+                {
+                    "lang": "xxx",
+                    "abbr": "yyy"
+                },
+                "usfm",
+                fse.readFileSync(
                     path.join(
                         path.resolve(process.argv[2],
                             file
